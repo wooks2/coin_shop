@@ -21,7 +21,7 @@ import sourcecode.model.DAO;
  * 
  * @author Fábio Augusto Rodrigues
  */
-public class StatiticsController implements Initializable {
+public class RankChartLayoutController implements Initializable {
     
     @FXML
     private BarChart<String, Integer> barChart;
@@ -41,7 +41,7 @@ public class StatiticsController implements Initializable {
         
         xAxis.setCategories(monthNames);
         
-        setPersonData(DAO.getInstance().findAll());
+        //setPersonData(DAO.getInstance().findAll());
     }    
     
     public void setPersonData(List<Person> persons){

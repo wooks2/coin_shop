@@ -43,10 +43,10 @@ print R
 possible이 1이면 가입 가능
 		  0이면 가입 불가능
 """
+-- 시퀀스.nextval 로 자동 입력
 
 CREATE OR REPLACE PROCEDURE customer_insert_version2
 (
-    --id IN customer.id%TYPE,
 	name IN customer.name%TYPE,
 	password IN customer.password%TYPE,
 	zipcode IN customer.zipcode%TYPE,
@@ -63,7 +63,7 @@ BEGIN
   IF MR = 0 THEN
     --테이블에 데이터 넣기
     INSERT INTO CUSTOMER(id,name,password,zipcode,phone_number,coin, volunteer_working_time)
-	VALUES(id, name, password, zipcode, phone_number, coin,  volunteer_working_time);
+	VALUES(customer_id_seq.nextval,name, password, zipcode, phone_number, coin,  volunteer_working_time);
     possible := 1 ; --possible 반대,
     COMMIT;
   ELSE
@@ -75,8 +75,8 @@ END ;
 
 -- 실행
 VAR R NUMBER;
-EXEC customer_insert_version2(3,'sadgs','cabw','asdfaseg','1231',1241,132,:R);
-PRINT R;
+EXEC customer_insert_version2('sadgs','cabw','asdfaseg','1231',1241,132,:R);
+PRINT R;  -- 1 리턴되면 회원가입 성공, 0일때 회원가입 실패
 
 
 
@@ -144,7 +144,7 @@ INSERT INTO PRODUCT(id,CUSTOMER_ID,NAME,INFORMATION,PRICE,CATEGORY_ID, SHIPMENT_
 INSERT INTO Cateogry(id,CUSTOMER_ID,NAME,INFORMATION,PRICE,CATEGORY_ID, SHIPMENT_ID)
 	VALUES(1, 1, 'asdf', 'fasdfsgea', 1000, 1, 1);
 """
------- to do
+
 -- 전체 글 조회
 CREATE OR REPLACE procedure select_productListAll
 (
@@ -153,7 +153,7 @@ CREATE OR REPLACE procedure select_productListAll
 AS
 BEGIN
 OPEN productList_record FOR
-SELECT name,price, 
+SELECT name,price,customer_id
 FROM product;
 END;
 /
@@ -251,26 +251,25 @@ print category_select;
 
 CREATE OR REPLACE PROCEDURE product_insert
 (
-	id IN product.id%TYPE,
+	--id IN product.id%TYPE,
 	customer_id IN customer.id%TYPE,
-    name In product.name%Type, --다이어그램에 추가, name
+    p_name IN product.name%Type, --다이어그램에 추가, name
 	information IN product.information%TYPE,
 	price IN product.price%TYPE,
 	category_id IN category.id%TYPE,
     category_name IN category.name%TYPE, --category_name
-    status IN product.status%TYPE, -- product 상태 ( 거래대기,거래중, 거래완료)
-	shipment_id IN shipment.id%TYPE
+    --status IN product.status%TYPE, -- product 상태 ( 거래대기,거래중, 거래완료)
+	shipment_name IN shipment.name%TYPE
 
 )
 IS 
 BEGIN
 
-	INSERT INTO product(id,customer_id,name,information,price,category_id,category_name,status, shipment_id)
-	VALUES(id, customer_id,name, information, price, category_id,category_name,status, shipment_id);
-
-    INSERT INTO category(id,name)
-	VALUES(category_id, category_name);
-
+	--INSERT INTO category(id,name)
+	
+	insert into product(id,customer_id,name,information,price,category_id,category_name,product_status,shipment_id)
+	values(product_id_seq.nextval,customer_id,p_name, information, price,
+	category_id,category_name, 'READY', (select id from shipment_company where shipment_name = shipment.name));
 	COMMIT;
 END; 
 /
@@ -278,7 +277,7 @@ END;
 
 --프로시저 실행
 
-exec product_insert(1, 1,'asdf', 'is good!!!', 1000, 1, '의류', 'READY',1);
+exec product_insert(1,'충전기 또 팔아연', '좋아요 이거', 1000, 1, 'clothing','');
 
 
 -----------------------------------------------------------------------------

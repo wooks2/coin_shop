@@ -27,6 +27,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sourcecode.MainApp;
+
+import sourcecode.controller.DBConnection;
 import sourcecode.model.DAOCustomer;
 import sourcecode.model.Customer;
 
@@ -34,7 +36,6 @@ public class LoginLayoutController implements Initializable {
 	MainApp mainApp; 
 	Scene thisScene;
 	
-	private enum errCode = {SUCCESS = 0, ID_OVERLAPPED = 1, PW_INCORRECT = 2};
 	@FXML private TextField tfID;
 	@FXML private PasswordField tfPW; 
 	@FXML private Button btnLogin;
@@ -43,7 +44,7 @@ public class LoginLayoutController implements Initializable {
 	
 	private boolean bID;
 	private boolean bPW;
-	private int bLoginSuccess;
+	private boolean bLoginSuccess;
 	
 	@FXML
 	void onBtnClickedLogin(ActionEvent event) {
@@ -51,22 +52,16 @@ public class LoginLayoutController implements Initializable {
 		String id = tfID.getText();
 		String pw = tfPW.getText();
 		
+		//if login success 단 id, pw따로 확인할것
+		// 1 리턴시 로그인 성공, 0 리턴시 로그인 실패 구현
 		System.out.println(id + ", " + pw);
 		bLoginSuccess = funcCheckLogin(id, pw);
 
-		//if login success 단 id, pw따로 확인할것
-		if(bLoginSuccess == 1) {
+		if(bLoginSuccess == false) {
 			//ID 중복
 			Alert alert = new Alert(AlertType.WARNING);
 			alert.setTitle("login Error");
-			alert.setHeaderText("아이디가 존재하지 않습니다");
-			alert.showAndWait();
-		}
-		else if(bLoginSuccess == 2){ 
-			// PW 오류
-			Alert alert = new Alert(AlertType.WARNING);
-			alert.setTitle("login Error");
-			alert.setHeaderText("비밀번호가 틀렸습니다");
+			alert.setHeaderText("로그인 실패 : 아이디 또는 비밀번호를 확인해주세요.");
 			alert.showAndWait();
 		}
 		else { // 로그인 성공
@@ -75,9 +70,9 @@ public class LoginLayoutController implements Initializable {
 		}	
 	}
 	
-	   private int funcCheckLogin(String strID, String strPW) {
+	   private boolean funcCheckLogin(String strID, String strPW) {
 	    	
-			String runP = "{ call C_NAMECHECK(?, ?) }";
+			String runP = "{ call customer_login(?, ?, ?) }";
 		
 				try {
 					Connection conn = DBConnection.getConnection();
@@ -85,17 +80,18 @@ public class LoginLayoutController implements Initializable {
 					CallableStatement callableStatement = conn.prepareCall(runP.toString());
 					callableStatement.setString(1, strID);
 					callableStatement.setString(2, strPW);
-				
+					callableStatement.registerOutParameter(3, java.sql.Types.INTEGER);
 					callableStatement.executeUpdate();	
 					
-					int check = callableStatement.getInt(2);
-					if(check == 1) {
-						System.out.println("아이디 중복");
-						return 1;	
+					int check = callableStatement.getInt(3);
+					if(check == 0) {
+						System.out.println("로그인 실패");
+							return false;
 					}
-					else
-						System.out.println("실행 성공");
-					
+					else {
+						System.out.println("로그인 성공");
+						return true;
+					}
 				} catch (SQLException e) {
 					System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
 					e.printStackTrace();
@@ -103,9 +99,9 @@ public class LoginLayoutController implements Initializable {
 					e.printStackTrace();
 				}
 				
-				return 0;
-				
+				return true; //Success
 	    }
+	   
 	@FXML
 	void onBtnClickedRegisterMember(ActionEvent event) {
 		System.out.println("회원가입 버튼 클릭");

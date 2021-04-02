@@ -68,7 +68,6 @@ public class MainApp extends Application {
 			FXMLLoader fxmlLoader = new FXMLLoader();
 			fxmlLoader.setLocation(MainApp.class.getResource("view/fxml/RootLayout.fxml"));
 			rootLayout = (BorderPane) fxmlLoader.load();
-
 			
 			RootLayoutController rootController = fxmlLoader.getController();
 	
@@ -84,6 +83,7 @@ public class MainApp extends Application {
 			//rootLayout.setCenter(rootController.getRankChart());
 			primaryStage.show();
 		} catch (IOException e) {
+			e.printStackTrace();
 			return false;
 		}
 

@@ -22,8 +22,9 @@ import sourcecode.controller.DBConnection;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import sourcecode.model.DAOCustomer;
-import sourcecode.model.Customer;
+
+
+import sourcecode.model.*;
 
 import sourcecode.util.DateUtil;
 
@@ -149,24 +150,23 @@ public class RegisterMemberDialogController implements Initializable {
     // ID 중복 확인 후 회원 등록 프로시저 호출
     private boolean procRegisterID(Customer customer) {
     	
-		String runP = "{ call customer_insert_version2(?, ?, ?, ?, ?, ?, ?, ?) }";
+		String runP = "{ call customer_insert_version2(?, ?, ?, ?, ?, ?, ?) }";
 	
 			try {
 				Connection conn = DBConnection.getConnection();
 				Statement stmt = conn.createStatement();
 				CallableStatement callableStatement = conn.prepareCall(runP.toString());
-				callableStatement.setInt(1, customer.getId());
-				callableStatement.setString(2, customer.getName());
-				callableStatement.setString(3, customer.getPassword());
-				callableStatement.setString(4, customer.getZipcode());
-				callableStatement.setString(5, customer.getPhone());
-				callableStatement.setInt(6, customer.getCoin());
-				callableStatement.setInt(7, customer.getVolunteer_time());
-				callableStatement.registerOutParameter(8, java.sql.Types.INTEGER);
+				callableStatement.setString(1, customer.getName());
+				callableStatement.setString(2, customer.getPassword());
+				callableStatement.setString(3, customer.getZipcode());
+				callableStatement.setString(4, customer.getPhone());
+				callableStatement.setInt(5, customer.getCoin());
+				callableStatement.setInt(6, customer.getVolunteer_time());
+				callableStatement.registerOutParameter(7, java.sql.Types.INTEGER);
 				callableStatement.executeUpdate();	
 				
-				int check = callableStatement.getInt(8);
-				if(check == 1) {
+				int check = callableStatement.getInt(7);
+				if(check == 0) {
 					System.out.println("아이디 중복");
 					return false;	
 				}
@@ -280,6 +280,7 @@ public class RegisterMemberDialogController implements Initializable {
     private void onBtnClickedCheckVolunteerTime(ActionEvent event) {
     	String volunteerTime = tfVolunteerTime.getText();
     	nPoint = Integer.parseInt(volunteerTime) * 10;
+    	daoCustomer.getCustomer().setCoin(nPoint);
     	textPoint.setText(Integer.toString(nPoint));
     	bIsCheckedPoint = true;
     	return;

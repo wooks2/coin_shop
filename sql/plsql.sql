@@ -125,7 +125,7 @@ END ;
 
 -- 실행
 VAR R NUMBER;
-EXEC customer_login(3,'sadgs','cabw','asdfaseg','1231',1241,132,:R);
+EXEC customer_login('id','pw',:R);
 PRINT R; -- 1이 로그인 성공!, 0은 로그인 실패
 
 -----------------------------------------------------------------------------

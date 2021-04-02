@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import sourcecode.model.Customer;
+
 import sourcecode.controller.DBConnection;
+import sourcecode.model.Customer;
 
 public class DAOCustomer {
     

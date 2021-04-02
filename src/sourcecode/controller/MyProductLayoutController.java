@@ -24,6 +24,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -64,7 +65,10 @@ public class MyProductLayoutController implements Initializable {
     	mainApp.showRegisterProductDialog();
     }
 
-    
+    @FXML
+    private void onClickedTable(MouseEvent event) {
+    	mainApp.showBuyProductDialog();
+    }
     @FXML
     void actionSearch(ActionEvent event) {
         try {

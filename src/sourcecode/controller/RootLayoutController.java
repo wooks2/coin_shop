@@ -143,7 +143,7 @@ public class RootLayoutController implements Initializable {
     	paneSegment.getChildren().add(paneMyProduct);
     	paneSegment.getChildren().add(paneRankChart);
     	//paneSegment.toBack();
-    	//stageData[0].show();
+    	
     }
     
     @FXML

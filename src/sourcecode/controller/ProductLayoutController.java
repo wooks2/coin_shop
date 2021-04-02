@@ -21,6 +21,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+
 import org.controlsfx.control.textfield.AutoCompletionBinding;
 import org.controlsfx.control.textfield.TextFields;
 import java.util.Arrays;
@@ -119,6 +121,12 @@ public class ProductLayoutController implements Initializable {
 		 * }catch(NullPointerException npe){ lblNote.setText(""); }
 		 */
     }    
+    
+    @FXML
+    private void onClickedTable(MouseEvent event) {
+    	//productTable.getSelectionModel().getSelectedItem().getXX();
+    	mainApp.showBuyProductDialog();
+    }
     
     public boolean loadProduct(boolean cleanTable){
         

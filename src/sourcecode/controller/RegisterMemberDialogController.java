@@ -4,6 +4,10 @@ import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXPasswordField;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -14,10 +18,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sourcecode.controller.DBConnection;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import sourcecode.model.Person;
+import sourcecode.model.Customer;
 import sourcecode.model.DAO;
 
 import sourcecode.util.DateUtil;
@@ -49,9 +55,9 @@ public class RegisterMemberDialogController implements Initializable {
     private String strZipCode;
     private int nVolunteerTime;
    
-    
     private Stage currentStage;
     private Person person;
+    private Customer customer;
     private boolean okClicked = false;
     private String insertionType;
     
@@ -127,11 +133,13 @@ public class RegisterMemberDialogController implements Initializable {
     		return false;
     	}
     }
+    
     @FXML
     private void registerNewMember(ActionEvent event) {
         
     	if(isValidInput()) {
     		//register member data callableStatement
+    		
     		currentStage.close();
     	}
     }
@@ -140,6 +148,7 @@ public class RegisterMemberDialogController implements Initializable {
     private void exitMemberRegisterForm(ActionEvent event) {
     	currentStage.close();
     }
+    
     @FXML
     private boolean onBtnClickedCheckID(ActionEvent event) {
     	//is ID exists? callableStatement
@@ -148,11 +157,89 @@ public class RegisterMemberDialogController implements Initializable {
     	alert.setTitle("Warning !!");
 		alert.setHeaderText("중복되는 ID입니다");
 		alert.showAndWait();
-		*/
+		
     	strID = tfID.getText();
     	bIsCheckedID = true;
+    	
+    	
+    	*/
+    	Customer customer = new Customer();
+    	customer.setName(tfID.getText());
+    	bIsCheckedID = procCheckID(customer);
     	return bIsCheckedID;
     }
+    
+    // ID 중복 확인 프로시저 호출
+    private boolean procCheckID(Customer customer) {
+    	
+		String runP = "{ call C_NAMECHECK(?, ?) }";
+	
+			try {
+				Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement();
+				CallableStatement callableStatement = conn.prepareCall(runP.toString());
+				callableStatement.setString(1, customer.getName());
+				callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
+				callableStatement.executeUpdate();	
+				
+				int check = callableStatement.getInt(2);
+				if(check == 1) {
+					System.out.println("아이디 중복");
+					return false;	
+				}
+				else
+					System.out.println("실행 성공");
+				
+			} catch (SQLException e) {
+				System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return true;
+			
+    }
+    
+    /* ID 중복 확인 후 회원 등록 프로시저 호출
+    private boolean procRegisterID(Customer customer) {
+    	
+		String runP = "{ call customer_insert_version2(?, ?, ?, ?, ?, ?, ?, ?) }";
+	
+			try {
+				Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement();
+				CallableStatement callableStatement = conn.prepareCall(runP.toString());
+				callableStatement.setInt(1, customer.getId());
+				callableStatement.setString(2, customer.getName());
+				callableStatement.setString(3, customer.getPassword());
+				callableStatement.setString(4, customer.getZipcode());
+				callableStatement.setString(5, customer.getPhone());
+				callableStatement.setInt(6, customer.getCoin());
+				callableStatement.setInt(7, customer.getVolunteer_time());
+				callableStatement.registerOutParameter(8, java.sql.Types.INTEGER);
+				callableStatement.executeUpdate();	
+				
+				int check = callableStatement.getInt(8);
+				if(check == 1) {
+					System.out.println("아이디 중복");
+					return false;	
+				}
+				else
+					System.out.println("실행 성공");
+				
+				
+			} catch (SQLException e) {
+				System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return true;
+    }
+    
+    */
     @FXML
     private boolean onBtnClickedCheckPassword(ActionEvent event) {
     	Alert alert = new Alert(AlertType.WARNING);

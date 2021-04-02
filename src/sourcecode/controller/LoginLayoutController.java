@@ -1,9 +1,9 @@
 package sourcecode.controller;
 
 import java.io.IOException;
+
 import java.net.URL;
 import java.util.ResourceBundle;
-
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,6 +24,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sourcecode.MainApp;
 import sourcecode.model.Person;
+import sourcecode.model.Customer;
+
 public class LoginLayoutController implements Initializable {
 	MainApp mainApp; 
 	Scene thisScene;
@@ -33,9 +35,11 @@ public class LoginLayoutController implements Initializable {
 	@FXML private Button btnLogin;
 	@FXML private Button btnRegisterMember;
 	@FXML private Button btnExit;
+	
 	private boolean bID;
 	private boolean bPW;
 	private boolean bLoginSuccess;
+	
 	@FXML
 	void onBtnClickedLogin(ActionEvent event) {
 		System.out.println("로그인 버튼 클릭");

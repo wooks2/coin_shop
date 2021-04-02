@@ -150,6 +150,7 @@ END;
 -- 전체 글 조회 프로시저
 -- 카테고리 별 조회 프로시저
 -- 제품 상세정보
+-- 카테고리 별 조회--
 """
 -- 샘플데이터
 INSERT INTO PRODUCT(id,CUSTOMER_ID,NAME,INFORMATION,PRICE,CATEGORY_ID, SHIPMENT_ID)
@@ -181,131 +182,41 @@ print p_all;
 
 -- 카테고리 별 조회--
 
-
-
--- 어떤 카테고리 테이블을 가져올 지 체크
-
-
-CREATE OR REPLACE procedure find_partition_table
+CREATE OR REPLACE PROCEDURE select_category
 (
-	categ_id IN category.id%TYPE,
-	PT out CLOB
+    customer_id IN product.customer_id%TYPE,
+	category_id IN product.category_id%TYPE,
+	category_name IN product.category_name%TYPE,
+	s_category_record OUT SYS_REFCURSOR
+	
 )
 IS
 BEGIN
-  IF categ_id = 1 OR categ_id = 2 THEN
-     PT := 'P_CLOTHING';
+  
+  
+	OPEN s_category_record FOR
+	SELECT p.name, p.price, (select name from customer where id= customer_id), p.category_name, p.product_status
+	FROM PRODUCT p inner join category c
+	on p.category_id = c.id
+	order by p.id asc;
 	
-  ELSIF categ_id = 3 OR categ_id = 4 THEN
-    PT := 'P_DIGITAL';
-	
-  ELSIF categ_id = 5 OR categ_id = 6 THEN
-    PT := 'P_FURNITURE' ;
-  ELSIF categ_id = 7 OR categ_id = 8 THEN
-   PT := 'P_FURNITURE' ;
-  ELSE
-   PT := 'P_ETC';
-  END IF;
- END;
- /
- 
- VAR PT CLOB;
- EXEC find_partition_table(2,:PT);
- PRINT PT
--------------------------------------------------------------
-
-
-
-CREATE OR REPLACE PROCEDURE customer_insert_version2
-(
-	name IN customer.name%TYPE,
-	password IN customer.password%TYPE,
-	zipcode IN customer.zipcode%TYPE,
-	phone_number IN customer.phone_number%TYPE,
-	coin IN customer.coin%TYPE,
-	volunteer_working_time IN customer.volunteer_working_time%TYPE,
-    possible OUT NUMBER
-)
-IS
-  MR NUMBER;
-BEGIN
-  -- 중복체크
-  find_partition_table(categ_id, MR);
-  IF MR = 0 THEN
-    --테이블에 데이터 넣기
-    INSERT INTO CUSTOMER(id,name,password,zipcode,phone_number,coin, volunteer_working_time)
-	VALUES(customer_id_seq.nextval,name, password, zipcode, phone_number, coin,  volunteer_working_time);
-    possible := 1 ; --possible 반대,
-    COMMIT;
-  ELSE
-    possible := 0 ;
-  END IF;
-  DBMS_OUTPUT.PUT_LINE(TO_CHAR(MR));
 END ;
 /
 
 
-
-
-
-
-
-
-
-
--- 카테고리는 파티셔닝 되어있음. 확인-
-CREATE OR REPLACE procedure product_Category_ListAll
-(
-    categ_id IN category.id%TYPE,
-    category_record OUT SYS_REFCURSOR
-)
-AS
-BEGIN
-OPEN category_record FOR
-select *
-from product
-partition(
-
-where category_id=categ_id;
-END;
-/
-
 var category_select refcursor;
-exec product_Category_ListAll(1,:category_select)
+exec select_category(1,1,'clothing',:category_select);
 print category_select;
 
 
+-- 샘플 데이터
+--insert into product(id,customer_id,name,information,price,category_id,category_name,product_status,shipment_id)
+--values (1,1,'asdf','asgsds',1300,1,'clothing','READY',1);
 
-
- SELECT *
- FROM ALL_TAB_PARTITIONS
- WHERE TABLE_NAME = 'P_CLOTHING';
-
-
-
-
-
--- 카테고리는 파티셔닝 되어있음. 확인-
-CREATE OR REPLACE procedure product_Category_ListAll
-(
-    categ_id IN category.id%TYPE,
-    category_record OUT SYS_REFCURSOR
-)
-AS
-BEGIN
-OPEN category_record FOR
-SELECT *
-FROM product
-where category_id=categ_id;
-END;
-/
-
-var category_select refcursor;
-exec product_Category_ListAll(1,:category_select)
-print category_select;
 
 -----------------------------------------------------------------------------
 -- 제품 상세정보
+
 CREATE OR REPLACE procedure product_detail
 (
 	p_id 			IN 		product.id%TYPE,
@@ -334,9 +245,13 @@ print pro_detail;
 --                          마이 페이지                                     --
 -----------------------------------------------------------------------------
 
--- 내가 올린 상품 보기
--- 물품 등록
--- 수령 확인 버튼
+-----------------
+-- 내가 올린 상품 보기 |
+-- 물품 등록 		|
+-- 수령 확인 버튼	|
+-- 카테고리 리스트 박스	|
+-- 배송회사 리스트 박스	|
+-----------------
 
 -- 내가 올린 상품 보기
 CREATE OR REPLACE procedure customer_sell_product
@@ -370,15 +285,9 @@ print category_select;
 
 
 
--- 제품 이름
--- 제품 가격
--- 제품 설명
--- 제품 상태
--- 판매자 아이디
--- 배송회사이름
--- 카테고리이름
+
  -- 최신버전
-CREATE OR REPLACE PROCEDURE product_insert_temp
+CREATE OR REPLACE PROCEDURE product_insert
 (
 
 	customer_id IN customer.id%TYPE, -- 고객 id
@@ -427,49 +336,16 @@ BEGIN
 END; 
 /
 
-exec product_insert_temp(1,'충전기 또 팔아연', '좋아요 이거', 1000, 'clothing','hangin');
+exec product_insert(1,'충전기 또 팔아연', '좋아요 이거', 1000, 'clothing','hangin');
 
 
 
-
-"""
-CREATE OR REPLACE PROCEDURE product_insert
-(
-	--id IN product.id%TYPE,
-	customer_id IN customer.id%TYPE,
-    p_name IN product.name%Type, --다이어그램에 추가, name
-	information IN product.information%TYPE,
-	price IN product.price%TYPE,
-	category_id IN category.id%TYPE,
-    category_name IN category.name%TYPE, --category_name
-    --status IN product.status%TYPE, -- product 상태 ( 거래대기,거래중, 거래완료)
-	shipment_name IN shipment.name%TYPE
-
-)
-IS 
-BEGIN
-
-	--INSERT INTO category(id,name)
-	
-	insert into product(id,customer_id,name,information,price,category_id,category_name,product_status,shipment_id)
-	values(product_id_seq.nextval,customer_id,p_name, information, price,
-	category_id,category_name, 'READY', (select id from shipment_company where shipment_name = shipment.name));
-	COMMIT;
-END; 
-/
-
-
---프로시저 실행
-
-exec product_insert(1,'충전기 또 팔아연', '좋아요 이거', 1000, 1, 'clothing','');
-"""
 
 -----------------------------------------------------------------------------
--- 수령 확인 버튼
+-- 수령 확인 버튼(미완성)
 
 
 
--- 
 -- 현재 거래중인 물품만 수령확인 가능(문자열 일치 비교), procedure에서는 update만
 
 CREATE OR REPLACE PROCEDURE product_accept
@@ -489,38 +365,49 @@ END ;
 
 
 
--- 
-"""
-CREATE OR REPLACE PROCEDURE product_accept
+-- 카테고리 리스트 박스
+
+CREATE OR REPLACE procedure category_allbox
 (
-    p_id IN product.id%TYPE,
-	
-    customer_cnt OUT NUMBER
-)	
+	category_list_record  OUT 		SYS_REFCURSOR
+)
 IS
-  MR NUMBER;
 BEGIN
-  -- 중복체크
-  P_STATUSCHECK(name, MR);
-  
-  IF MR = 0 THEN
-    --테이블에 데이터 넣기
-    INSERT INTO CUSTOMER(id,name,password,zipcode,phone_number,coin, volunteer_working_time)
-	VALUES(id, name, password, zipcode, phone_number, coin,  volunteer_working_time);
-    customer_cnt := 1 ;
-    COMMIT;
-  ELSE
-    customer_cnt := 0 ;
-  END IF;
-  DBMS_OUTPUT.PUT_LINE(TO_CHAR(MR));
-END ;
+	OPEN category_list_record FOR
+	SELECT name
+	FROM category;
+END;
 /
-"""
 
--- 
--- 
+var category_all refcursor;
+exec category_allbox(:category_all);
+print category_all;
 
+-- 샘플 데이터
+--insert into category(id,name) values(2,'book');
 
+--실행
+var category_all refcursor;
+exec category_allbox(:category_all);
+print category_all;
+
+-- 배송회사 리스트 박스
+
+CREATE OR REPLACE procedure shipment_company_allbox
+(
+	shipcom_list_record  OUT 		SYS_REFCURSOR
+)
+IS
+BEGIN
+	OPEN shipcom_list_record FOR
+	SELECT name
+	FROM shipment_company;
+END;
+/
+
+var ship_com_all refcursor;
+exec shipment_company_allbox(:ship_com_all);
+print ship_com_all;
 
 
 -----------------------------------------------------------------------------
@@ -529,6 +416,7 @@ END ;
 -----------------------------------------------------------------------------
 
 -- 전체 상품 마일리지 랭킹
+
 CREATE OR REPLACE procedure select_coinRanking
 (
 	ranking_cursor  OUT 		SYS_REFCURSOR

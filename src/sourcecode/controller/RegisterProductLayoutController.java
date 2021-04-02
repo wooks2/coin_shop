@@ -35,7 +35,7 @@ import sourcecode.util.SendEmail;
 public class RegisterProductLayoutController implements Initializable {
 	Stage currentStage;
 	
-    @FXML private JFXComboBox<String> cbCategory;
+    @FXML private ComboBox<String> cbCategory;
     @FXML private ComboBox<String> cbShipmentCompany;
     @FXML private JFXTextField tfProductName;
     @FXML private JFXTextField tfProductPrice;

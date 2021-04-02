@@ -16,7 +16,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sourcecode.controller.LoginLayoutController;
 import sourcecode.controller.RegisterMemberDialogController;
-
+import sourcecode.controller.RegisterProductLayoutController;
 import sourcecode.model.Person;
 
 import sourcecode.controller.RootLayoutController;
@@ -117,7 +117,32 @@ public class MainApp extends Application {
 		return true;
 	}
 
+	public boolean showRegisterProductDialog() {
+    	try {
+			FXMLLoader loader = new FXMLLoader();
 	
+			loader.setLocation(MainApp.class.getResource("view/fxml/RegisterProductLayout.fxml"));
+
+			AnchorPane page = (AnchorPane) loader.load();
+			Stage stageRegProduct = new Stage();
+			stageRegProduct.initOwner(primaryStage.getScene().getWindow());
+			
+			Scene scene = new Scene(page);
+			stageRegProduct.setScene(scene);
+			stageRegProduct.getIcons().add(new Image(getClass().getResourceAsStream("/resources/images/adicionar.png")));
+
+			RegisterProductLayoutController controller = loader.getController();
+			controller.setDialogStage(stageRegProduct);
+			//controller.setPerson(person);
+
+			stageRegProduct.showAndWait();
+			return true;
+			//return controller.isOkClicked();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+    }
 
 	public static void main(String[] args) {
 		launch(args);

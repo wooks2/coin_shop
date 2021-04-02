@@ -120,10 +120,12 @@ public class RootLayoutController implements Initializable {
 				case 0:
 					paneAllProduct = fxmlLoader[i].load();
 					allProductController = fxmlLoader[i].getController();
+					allProductController.setMainApp(mainApp);
 					break;
 				case 1:
 					paneMyProduct = fxmlLoader[i].load();
 					myProductController = fxmlLoader[i].getController();
+					myProductController.setMainApp(mainApp);
 					break;
 				case 2:
 					paneRankChart = fxmlLoader[i].load();

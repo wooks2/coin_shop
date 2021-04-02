@@ -33,7 +33,6 @@ import sourcecode.model.Person;
 
 public class ProductLayoutController implements Initializable {
 
-
     @FXML private JFXComboBox<String> attributeList;
     @FXML private TextField txtSearch;
     @FXML private TableView<Person> productTable;
@@ -55,9 +54,7 @@ public class ProductLayoutController implements Initializable {
     
     @FXML
     void actionRegisterProduct(ActionEvent event) {
-		/*
-		 * if (mainApp.showPersonEditDialog("Register", null)){ loadPerson(true); }
-		 */
+    	mainApp.showRegisterProductDialog();
     }
 
    

@@ -164,7 +164,112 @@ exec select_productListAll(:p_all);
 print p_all;
 
 ------------------------------------------------------------------------
+
 -- 카테고리 별 조회--
+
+
+
+-- 어떤 카테고리 테이블을 가져올 지 체크
+
+
+CREATE OR REPLACE procedure find_partition_table
+(
+	categ_id IN category.id%TYPE,
+	PT out CLOB
+)
+IS
+BEGIN
+  IF categ_id = 1 OR categ_id = 2 THEN
+     PT := 'P_CLOTHING';
+	
+  ELSIF categ_id = 3 OR categ_id = 4 THEN
+    PT := 'P_DIGITAL';
+	
+  ELSIF categ_id = 5 OR categ_id = 6 THEN
+    PT := 'P_FURNITURE' ;
+  ELSIF categ_id = 7 OR categ_id = 8 THEN
+   PT := 'P_FURNITURE' ;
+  ELSE
+   PT := 'P_ETC';
+  END IF;
+ END;
+ /
+ 
+ VAR PT CLOB;
+ EXEC find_partition_table(2,:PT);
+ PRINT PT
+-------------------------------------------------------------
+
+
+
+CREATE OR REPLACE PROCEDURE customer_insert_version2
+(
+	name IN customer.name%TYPE,
+	password IN customer.password%TYPE,
+	zipcode IN customer.zipcode%TYPE,
+	phone_number IN customer.phone_number%TYPE,
+	coin IN customer.coin%TYPE,
+	volunteer_working_time IN customer.volunteer_working_time%TYPE,
+    possible OUT NUMBER
+)
+IS
+  MR NUMBER;
+BEGIN
+  -- 중복체크
+  find_partition_table(categ_id, MR);
+  IF MR = 0 THEN
+    --테이블에 데이터 넣기
+    INSERT INTO CUSTOMER(id,name,password,zipcode,phone_number,coin, volunteer_working_time)
+	VALUES(customer_id_seq.nextval,name, password, zipcode, phone_number, coin,  volunteer_working_time);
+    possible := 1 ; --possible 반대,
+    COMMIT;
+  ELSE
+    possible := 0 ;
+  END IF;
+  DBMS_OUTPUT.PUT_LINE(TO_CHAR(MR));
+END ;
+/
+
+
+
+
+
+
+
+
+
+
+-- 카테고리는 파티셔닝 되어있음. 확인-
+CREATE OR REPLACE procedure product_Category_ListAll
+(
+    categ_id IN category.id%TYPE,
+    category_record OUT SYS_REFCURSOR
+)
+AS
+BEGIN
+OPEN category_record FOR
+select *
+from product
+partition(
+
+where category_id=categ_id;
+END;
+/
+
+var category_select refcursor;
+exec product_Category_ListAll(1,:category_select)
+print category_select;
+
+
+
+
+ SELECT *
+ FROM ALL_TAB_PARTITIONS
+ WHERE TABLE_NAME = 'P_CLOTHING';
+
+
+
+
 
 -- 카테고리는 파티셔닝 되어있음. 확인-
 CREATE OR REPLACE procedure product_Category_ListAll
@@ -228,7 +333,7 @@ CREATE OR REPLACE procedure customer_sell_product
 AS
 BEGIN
 	OPEN customer_sell_record FOR
-	SELECT name, price, status
+	SELECT name, price, product_status
 	FROM product
 	WHERE customer_id = c_id;
 END;
@@ -236,7 +341,7 @@ END;
 
 --실행
 var category_select refcursor;
-exec product_Category_ListAll(1,:category_select)
+exec customer_sell_product(1,:category_select)
 print category_select;
 
 ------------------------------------------------------------------------------------
@@ -275,7 +380,6 @@ IS
 	shipcom_id NUMBER;
 	ship_id NUMBER := shipment_id_seq.nextval;
 	product_id NUMBER :=product_id_seq.nextval;
-	
 	
 BEGIN
 

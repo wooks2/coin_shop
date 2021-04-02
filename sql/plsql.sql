@@ -249,6 +249,72 @@ print category_select;
 -- values (1,'hangin','2013-02-12',1,1,1);
 """
 
+
+
+-- 제품 이름
+-- 제품 가격
+-- 제품 설명
+-- 제품 상태
+-- 판매자 아이디
+-- 배송회사이름
+-- 카테고리이름
+ -- 최신버전
+CREATE OR REPLACE PROCEDURE product_insert_temp
+(
+
+	customer_id IN customer.id%TYPE, -- 고객 id
+    p_name IN product.name%Type, -- 제품이름
+	information IN product.information%TYPE, --제품 설명
+	price IN product.price%TYPE, -- 제품 가격
+    category_name IN category.name%TYPE, --카테고리 이름
+	shipment_name IN shipment_company.name%TYPE -- 배송회사 이름
+	
+)
+IS 
+	category_id NUMBER;
+	shipcom_id NUMBER;
+	ship_id NUMBER := shipment_id_seq.nextval;
+	product_id NUMBER :=product_id_seq.nextval;
+	
+	
+BEGIN
+
+	--INSERT INTO category(id,name)
+	
+	--- category 아이디 변수로 저장
+	SELECT id INTO category_id
+	FROM category
+	where name=category_name;
+	
+	SELECT id INTO shipcom_id
+	FROM shipment_company
+	where name=shipment_name;
+	
+	
+	
+	-- product 테이블에 저장
+	
+	insert into product(id,customer_id,name,information,price,category_id,category_name,product_status,shipment_id)
+	values(product_id,customer_id,p_name, information, price,
+	category_id,category_name, 'READY', ship_id);
+	
+	-- product customer id 판매자
+	
+	
+	insert into shipment(id,shipment_company_id,product_id, PRODUCT_CUSTOMER_ID)
+	values(ship_id, shipcom_id, product_id, customer_id);
+	
+	commit;
+	
+END; 
+/
+
+exec product_insert_temp(1,'충전기 또 팔아연', '좋아요 이거', 1000, 'clothing','hangin');
+
+
+
+
+"""
 CREATE OR REPLACE PROCEDURE product_insert
 (
 	--id IN product.id%TYPE,
@@ -278,7 +344,7 @@ END;
 --프로시저 실행
 
 exec product_insert(1,'충전기 또 팔아연', '좋아요 이거', 1000, 1, 'clothing','');
-
+"""
 
 -----------------------------------------------------------------------------
 -- 수령 확인 버튼

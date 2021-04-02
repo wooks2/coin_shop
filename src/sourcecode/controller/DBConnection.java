@@ -30,7 +30,7 @@ public class DBConnection {
         // JDBC 드라이버 로딩
         Class.forName("oracle.jdbc.driver.OracleDriver");
         
-        // 3-1. DriverManager ( JDBC 드라이버 인스턴스 관리 )
+        // DriverManager ( JDBC 드라이버 인스턴스 관리 )
         // getDrivers() : 현재 생성된 JDBC 인스턴스 목록 반환 메소드
         Enumeration<Driver> driverList = DriverManager.getDrivers();
         

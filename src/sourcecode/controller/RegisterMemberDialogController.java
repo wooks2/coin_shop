@@ -22,9 +22,8 @@ import sourcecode.controller.DBConnection;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import sourcecode.model.Person;
+import sourcecode.model.DAOCustomer;
 import sourcecode.model.Customer;
-import sourcecode.model.DAO;
 
 import sourcecode.util.DateUtil;
 
@@ -39,8 +38,6 @@ public class RegisterMemberDialogController implements Initializable {
     @FXML private JFXTextField tfZipCode;
     @FXML private JFXTextField tfVolunteerTime;
     @FXML private Text textPoint;
-   
-    
     
     private boolean bIsCheckedID;
     private boolean bIsCheckedPW;
@@ -48,18 +45,14 @@ public class RegisterMemberDialogController implements Initializable {
     private int nPoint;
     
     private String title;
-    private String strID;
     private String strPW;
     private String strPW_check;
-    private String strPhoneNumber;
-    private String strZipCode;
-    private int nVolunteerTime;
    
     private Stage currentStage;
-    private Person person;
-    private Customer customer;
     private boolean okClicked = false;
     private String insertionType;
+    
+    private DAOCustomer daoCustomer;
     
     //dialog init
     @Override
@@ -92,17 +85,23 @@ public class RegisterMemberDialogController implements Initializable {
     		
     	});
     	
+    	daoCustomer = DAOCustomer.getInstance();
     	System.out.println(pfPW.getText());
     }  
 
     
     private boolean isValidInput() {
     	String str = "";
-    	
     	if(tfID.getText() != null && pfPW.getText() != null
     			&& tfPhoneNumber.getText() != null && tfZipCode.getText() != null
-    			&& tfVolunteerTime.getText() != null && textPoint.getText() != null) {
+    			&& tfVolunteerTime.getText() != null && textPoint.getText() != null) {    		
     		if(bIsCheckedID && bIsCheckedPW && bIsCheckedPoint) {
+    			daoCustomer.getCustomer().setName(tfID.getText());
+    			daoCustomer.getCustomer().setPassword(pfPW.getText());
+    			daoCustomer.getCustomer().setPhone(tfPhoneNumber.getText());
+    			daoCustomer.getCustomer().setZipcode(tfZipCode.getText());
+    			daoCustomer.getCustomer().setVolunteer_time(Integer.parseInt(tfVolunteerTime.getText()));
+    			daoCustomer.getCustomer().setCoin(nPoint);
     			return true;
     		} else {
     			
@@ -137,71 +136,17 @@ public class RegisterMemberDialogController implements Initializable {
     @FXML
     private void registerNewMember(ActionEvent event) {
         
+    	
     	if(isValidInput()) {
     		//register member data callableStatement
-    		
+    
+    		procRegisterID(daoCustomer.getCustomer());
     		currentStage.close();
     	}
     }
     
-    @FXML
-    private void exitMemberRegisterForm(ActionEvent event) {
-    	currentStage.close();
-    }
     
-    @FXML
-    private boolean onBtnClickedCheckID(ActionEvent event) {
-    	//is ID exists? callableStatement
-    	/*
-    	Alert alert = new Alert(AlertType.WARNING);
-    	alert.setTitle("Warning !!");
-		alert.setHeaderText("중복되는 ID입니다");
-		alert.showAndWait();
-		
-    	strID = tfID.getText();
-    	bIsCheckedID = true;
-    	
-    	
-    	*/
-    	Customer customer = new Customer();
-    	customer.setName(tfID.getText());
-    	bIsCheckedID = procCheckID(customer);
-    	return bIsCheckedID;
-    }
-    
-    // ID 중복 확인 프로시저 호출
-    private boolean procCheckID(Customer customer) {
-    	
-		String runP = "{ call C_NAMECHECK(?, ?) }";
-	
-			try {
-				Connection conn = DBConnection.getConnection();
-				Statement stmt = conn.createStatement();
-				CallableStatement callableStatement = conn.prepareCall(runP.toString());
-				callableStatement.setString(1, customer.getName());
-				callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
-				callableStatement.executeUpdate();	
-				
-				int check = callableStatement.getInt(2);
-				if(check == 1) {
-					System.out.println("아이디 중복");
-					return false;	
-				}
-				else
-					System.out.println("실행 성공");
-				
-			} catch (SQLException e) {
-				System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
-				e.printStackTrace();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
-			return true;
-			
-    }
-    
-    /* ID 중복 확인 후 회원 등록 프로시저 호출
+    // ID 중복 확인 후 회원 등록 프로시저 호출
     private boolean procRegisterID(Customer customer) {
     	
 		String runP = "{ call customer_insert_version2(?, ?, ?, ?, ?, ?, ?, ?) }";
@@ -239,7 +184,68 @@ public class RegisterMemberDialogController implements Initializable {
 			return true;
     }
     
-    */
+    
+    @FXML
+    private void exitMemberRegisterForm(ActionEvent event) {
+    	currentStage.close();
+    }
+    
+    @FXML
+    private boolean onBtnClickedCheckID(ActionEvent event) {
+    	//is ID exists? callableStatement
+    	Alert alert = new Alert(AlertType.WARNING);
+    	String message = "";
+    	daoCustomer.getCustomer().setName(tfID.getText());
+    	bIsCheckedID = procCheckID(daoCustomer.getCustomer());
+    	
+    	if(bIsCheckedID == true) {
+    		message = "사용가능한 ID입니다";
+    		alert.alertTypeProperty();
+    		alert.setAlertType(AlertType.CONFIRMATION);
+    	} else {
+    		message = "중복된 ID입니다";
+        	alert.setTitle("Warning !!");
+        	
+    	}
+		alert.setHeaderText(message);
+		alert.showAndWait();
+		
+    	return bIsCheckedID;
+    }
+    
+    //ID 중복 확인 프로시저 호출
+    private boolean procCheckID(Customer customer) {
+    	
+		String runP = "{ call C_NAMECHECK(?, ?) }";
+	
+			try {
+				Connection conn = DBConnection.getConnection();
+				Statement stmt = conn.createStatement();
+				CallableStatement callableStatement = conn.prepareCall(runP.toString());
+				callableStatement.setString(1, customer.getName());
+				callableStatement.registerOutParameter(2, java.sql.Types.INTEGER);
+				callableStatement.executeUpdate();	
+				
+				int check = callableStatement.getInt(2);
+				if(check == 1) {
+					System.out.println("아이디 중복");
+					return false;	
+				}
+				else
+					System.out.println("실행 성공");
+				
+			} catch (SQLException e) {
+				System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return true;
+			
+    }
+   
+    
     @FXML
     private boolean onBtnClickedCheckPassword(ActionEvent event) {
     	Alert alert = new Alert(AlertType.WARNING);
@@ -269,6 +275,7 @@ public class RegisterMemberDialogController implements Initializable {
     	}
     	return bIsCheckedPW;
     }
+    
     @FXML
     private void onBtnClickedCheckVolunteerTime(ActionEvent event) {
     	String volunteerTime = tfVolunteerTime.getText();
@@ -277,6 +284,7 @@ public class RegisterMemberDialogController implements Initializable {
     	bIsCheckedPoint = true;
     	return;
     }
+    
     @FXML
     void handleCancel(ActionEvent event) {
         currentStage.close();
@@ -299,13 +307,5 @@ public class RegisterMemberDialogController implements Initializable {
     public boolean isOkClicked() {
         return okClicked;
     }
- 
-    public void setPerson(Person person){
-        this.person = person;
-        
-    }
-    
-    public Person getPerson(){
-        return person;
-    }
+
 }

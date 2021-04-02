@@ -23,7 +23,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sourcecode.MainApp;
-import sourcecode.model.DAO;
+import sourcecode.model.DAOCustomer;
+import sourcecode.model.Customer;
 
 public class RootLayoutController implements Initializable {
     
@@ -77,7 +78,7 @@ public class RootLayoutController implements Initializable {
     @FXML
     void closeApplication(MouseEvent event) {
         try{
-            DAO.getInstance().closeEntityManager();
+            //DAOCustomer.getInstance().closeEntityManager();
         }catch(Exception e){
             System.out.println("Error when closing the application");
         }finally {

@@ -31,25 +31,26 @@ import java.util.Set;
 
 import sourcecode.MainApp;
 
-import sourcecode.model.Person;
+import sourcecode.model.DAOCustomer;
+import sourcecode.model.Customer;
 
 public class ProductLayoutController implements Initializable {
 
     @FXML private JFXComboBox<String> attributeList;
     @FXML private TextField txtSearch;
-    @FXML private TableView<Person> productTable;
-    @FXML private TableColumn<Person, String> columnImage;
-    @FXML private TableColumn<Person, String> columnProductName;
-    @FXML private TableColumn<Person, String> columnPrice;
-    @FXML private TableColumn<Person, String> columnSellerName;
-    @FXML private TableColumn<Person, String> columnCategory; 
-    @FXML private TableColumn<Person, String> columnProductStatus; 
+    @FXML private TableView<Customer> productTable;
+    @FXML private TableColumn<Customer, String> columnImage;
+    @FXML private TableColumn<Customer, String> columnProductName;
+    @FXML private TableColumn<Customer, String> columnPrice;
+    @FXML private TableColumn<Customer, String> columnSellerName;
+    @FXML private TableColumn<Customer, String> columnCategory; 
+    @FXML private TableColumn<Customer, String> columnProductStatus; 
     @FXML private Label lblNote;  
     @FXML private Label lblError;
     
-    private List<Person> listPerson = new ArrayList();
+    private List<Customer> listCustomer = new ArrayList();
     
-    private ObservableList<Person> observableListPerson;
+    private ObservableList<Customer> observablelistCustomer;
     
     MainApp mainApp;
    
@@ -68,7 +69,7 @@ public class ProductLayoutController implements Initializable {
             	loadProduct(true);
             }else{
                 
-                List<Person> people = new ArrayList();
+                List<Customer> people = new ArrayList();
                 
                 switch (attributeList.getValue()) {
                     case "Ή°Η°Έν":
@@ -137,10 +138,10 @@ public class ProductLayoutController implements Initializable {
             
             definingColumn();
         
-            //setListPerson(DAO.getInstance().findAll());
+            //setlistCustomer(DAO.getInstance().findAll());
 
-            observableListPerson = FXCollections.observableArrayList(listPerson);
-            productTable.setItems(observableListPerson);
+            observablelistCustomer = FXCollections.observableArrayList(listCustomer);
+            productTable.setItems(observablelistCustomer);
             
         }catch(Exception e) {
             alert("Error", null, "An error occurred while retrieving data", Alert.AlertType.ERROR);
@@ -151,11 +152,11 @@ public class ProductLayoutController implements Initializable {
     }
     
     
-    public void loadProduct(List<Person> arrayListPerson) {
+    public void loadProduct(List<Customer> arraylistCustomer) {
          try {
             cleanTable();
-            observableListPerson = FXCollections.observableArrayList(arrayListPerson);
-            productTable.setItems(observableListPerson);
+            observablelistCustomer = FXCollections.observableArrayList(arraylistCustomer);
+            productTable.setItems(observablelistCustomer);
         }catch(Exception e) {
             alert("Error", null, "An error occurred while retrieving data", Alert.AlertType.ERROR);
         }
@@ -201,31 +202,32 @@ public class ProductLayoutController implements Initializable {
         AutoCompletionBinding<String> acb;
         Set<String> ps;
         
-        ArrayList<String> values = new ArrayList<String>();
-        for (int i = 0; i < listPerson.size(); i++){
-            values.add(listPerson.get(i).getName());
-            values.add(listPerson.get(i).getAddress());
-            values.add(listPerson.get(i).getEmail());
-            values.add(listPerson.get(i).getBirthday());
-            values.add(listPerson.get(i).getNumber());
-        }
+		/*
+		 * ArrayList<String> values = new ArrayList<String>(); for (int i = 0; i <
+		 * listCustomer.size(); i++){ values.add(listCustomer.get(i).getName());
+		 * values.add(listCustomer.get(i).getAddress());
+		 * values.add(listCustomer.get(i).getEmail());
+		 * values.add(listCustomer.get(i).getBirthday());
+		 * values.add(listCustomer.get(i).getNumber()); }
+		 */
         
         
-        String[] _possibleSuggestions = values.toArray(new String[0]);
-        ps = new HashSet<>(Arrays.asList(_possibleSuggestions));
-        TextFields.bindAutoCompletion(txtSearch, _possibleSuggestions);
+		/*
+		 * String[] _possibleSuggestions = values.toArray(new String[0]); ps = new
+		 * HashSet<>(Arrays.asList(_possibleSuggestions));
+		 * TextFields.bindAutoCompletion(txtSearch, _possibleSuggestions);
+		 */
     }
     
-    public void showNote(Person person) {
-        lblNote.setText(person.getNote());
-    }
-    
-    public List<Person> getListPerson() {
-        return listPerson;
+	/*
+	 * public void showNote(Customer person) { lblNote.setText(person.getNote()); }
+	 */
+    public List<Customer> getlistCustomer() {
+        return listCustomer;
     }
 
-    public void setListPerson(List<Person> listPerson) {
-        this.listPerson = listPerson;
+    public void setlistCustomer(List<Customer> listCustomer) {
+        this.listCustomer = listCustomer;
     }
     
     

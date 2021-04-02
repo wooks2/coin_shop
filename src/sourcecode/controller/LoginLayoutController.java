@@ -3,6 +3,10 @@ package sourcecode.controller;
 import java.io.IOException;
 
 import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -23,13 +27,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sourcecode.MainApp;
-import sourcecode.model.Person;
+import sourcecode.model.DAOCustomer;
 import sourcecode.model.Customer;
 
 public class LoginLayoutController implements Initializable {
 	MainApp mainApp; 
 	Scene thisScene;
 	
+	private enum errCode = {SUCCESS = 0, ID_OVERLAPPED = 1, PW_INCORRECT = 2};
 	@FXML private TextField tfID;
 	@FXML private PasswordField tfPW; 
 	@FXML private Button btnLogin;
@@ -38,7 +43,7 @@ public class LoginLayoutController implements Initializable {
 	
 	private boolean bID;
 	private boolean bPW;
-	private boolean bLoginSuccess;
+	private int bLoginSuccess;
 	
 	@FXML
 	void onBtnClickedLogin(ActionEvent event) {
@@ -47,27 +52,60 @@ public class LoginLayoutController implements Initializable {
 		String pw = tfPW.getText();
 		
 		System.out.println(id + ", " + pw);
+		bLoginSuccess = funcCheckLogin(id, pw);
+
 		//if login success 단 id, pw따로 확인할것
-	
-		/*Alert alert = new Alert(AlertType.WARNING);
-		alert.setTitle("login Error");
-		if(!bID) {
+		if(bLoginSuccess == 1) {
+			//ID 중복
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("login Error");
 			alert.setHeaderText("아이디가 존재하지 않습니다");
+			alert.showAndWait();
 		}
-		else if(bID && !bPW) {
+		else if(bLoginSuccess == 2){ 
+			// PW 오류
+			Alert alert = new Alert(AlertType.WARNING);
+			alert.setTitle("login Error");
 			alert.setHeaderText("비밀번호가 틀렸습니다");
+			alert.showAndWait();
 		}
-		alert.showAndWait();*/
-		bLoginSuccess = true;
-		
-		if(bLoginSuccess) {
+		else { // 로그인 성공
 			Stage pop = (Stage)btnLogin.getScene().getWindow();
 			pop.close();
-		}
-			
-			
+		}	
 	}
 	
+	   private int funcCheckLogin(String strID, String strPW) {
+	    	
+			String runP = "{ call C_NAMECHECK(?, ?) }";
+		
+				try {
+					Connection conn = DBConnection.getConnection();
+					Statement stmt = conn.createStatement();
+					CallableStatement callableStatement = conn.prepareCall(runP.toString());
+					callableStatement.setString(1, strID);
+					callableStatement.setString(2, strPW);
+				
+					callableStatement.executeUpdate();	
+					
+					int check = callableStatement.getInt(2);
+					if(check == 1) {
+						System.out.println("아이디 중복");
+						return 1;	
+					}
+					else
+						System.out.println("실행 성공");
+					
+				} catch (SQLException e) {
+					System.err.format("SQL State: %s\n%s", e.getSQLState(), e.getMessage());
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				return 0;
+				
+	    }
 	@FXML
 	void onBtnClickedRegisterMember(ActionEvent event) {
 		System.out.println("회원가입 버튼 클릭");

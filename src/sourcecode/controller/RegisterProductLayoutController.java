@@ -26,11 +26,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import sourcecode.model.DAO;
-import sourcecode.model.Person;
-
 import sourcecode.util.SendEmail;
-
+import sourcecode.model.DAOCustomer;
+import sourcecode.model.Customer;
 
 public class RegisterProductLayoutController implements Initializable {
 	Stage currentStage;

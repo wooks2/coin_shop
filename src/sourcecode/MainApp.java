@@ -18,7 +18,9 @@ import sourcecode.controller.BuyProductLayoutController;
 import sourcecode.controller.LoginLayoutController;
 import sourcecode.controller.RegisterMemberDialogController;
 import sourcecode.controller.RegisterProductLayoutController;
-import sourcecode.model.Person;
+import sourcecode.model.DAOCustomer;
+import sourcecode.model.Customer;
+
 
 import sourcecode.controller.RootLayoutController;
 

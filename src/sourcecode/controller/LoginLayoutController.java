@@ -111,7 +111,7 @@ public class LoginLayoutController implements Initializable {
 		   CustomerMySelf customerMyself = CustomerMySelf.getInstance();
 		   OracleCallableStatement ocstmt = null;
 		   
-		   String runP = "{ call customer_info(?, ?) }";
+		   String runP = "{ call sp_get_customer_info(?, ?) }";
 		   try {
 			   Connection conn = DBConnection.getConnection();
 			   Statement stmt = conn.createStatement();

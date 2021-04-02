@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="libs/antlr-2.7.7.jar"/>
 	<classpathentry kind="lib" path="libs/byte-buddy-1.8.17.jar"/>
 	<classpathentry kind="lib" path="libs/classmate-1.3.4.jar"/>
@@ -23,6 +27,6 @@
 	<classpathentry kind="lib" path="libs/mail-1.4.7.jar"/>
 	<classpathentry kind="lib" path="libs/mysql-connector-java-5.1.49-bin.jar"/>
 	<classpathentry kind="lib" path="libs/poi-4.1.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/COM/Desktop/pro/coin_shop/libs/ojdbc6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/쫌/Desktop/현대_채용확정형_교육/JDBC_프로젝트/Git/coin_shop/libs/ojdbc6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
@@ -26,10 +27,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import oracle.jdbc.OracleCallableStatement;
+import oracle.jdbc.OracleTypes;
 import sourcecode.MainApp;
 
 import sourcecode.controller.DBConnection;
-import sourcecode.model.DAOCustomer;
+import sourcecode.model.CustomerMySelf;
 import sourcecode.model.Customer;
 
 public class LoginLayoutController implements Initializable {
@@ -45,6 +48,7 @@ public class LoginLayoutController implements Initializable {
 	private boolean bID;
 	private boolean bPW;
 	private boolean bLoginSuccess;
+	private CustomerMySelf daoCustomer;
 	
 	@FXML
 	void onBtnClickedLogin(ActionEvent event) {
@@ -90,6 +94,7 @@ public class LoginLayoutController implements Initializable {
 					}
 					else {
 						System.out.println("로그인 성공");
+						procCallCustomerInfo(strID);
 						return true;
 					}
 				} catch (SQLException e) {
@@ -98,10 +103,45 @@ public class LoginLayoutController implements Initializable {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				
+
 				return true; //Success
 	    }
 	   
+	   private boolean procCallCustomerInfo(String strID) {
+		   CustomerMySelf customerMyself = CustomerMySelf.getInstance();
+		   OracleCallableStatement ocstmt = null;
+		   
+		   String runP = "{ call customer_info(?, ?) }";
+		   try {
+			   Connection conn = DBConnection.getConnection();
+			   Statement stmt = conn.createStatement();
+			   CallableStatement callableStatement = conn.prepareCall(runP.toString());
+			   callableStatement.setString(1, strID);
+			   callableStatement.registerOutParameter(2, OracleTypes.CURSOR);
+			   callableStatement.executeUpdate();	
+			   ocstmt = (OracleCallableStatement)callableStatement;
+
+			  
+			   ResultSet rs =  ocstmt.getCursor(2);
+			   while (rs.next()) {
+			        String field1 = rs.getString(1);
+			        customerMyself.getCustomer().setId(rs.getInt("id"));
+			        customerMyself.getCustomer().setName(rs.getString("name"));
+	    			customerMyself.getCustomer().setPassword(rs.getString("password"));
+	    			customerMyself.getCustomer().setPhone(rs.getString("phone_number"));
+	    			customerMyself.getCustomer().setZipcode(rs.getString("zipcode"));
+	    			customerMyself.getCustomer().setVolunteer_time(rs.getInt("volunteer_working_time"));
+	    			customerMyself.getCustomer().setCoin(rs.getInt("coin"));
+			        System.out.println(customerMyself.getCustomer().getName()+"로그인 정보 동기화");
+			   }
+		   } catch(Exception e) {
+			   e.printStackTrace();
+			   return false;
+		   }
+			
+		   return true;
+			
+	   }
 	@FXML
 	void onBtnClickedRegisterMember(ActionEvent event) {
 		System.out.println("회원가입 버튼 클릭");

@@ -38,7 +38,7 @@ import java.util.Set;
 
 import sourcecode.MainApp;
 
-import sourcecode.model.DAOCustomer;
+import sourcecode.model.CustomerMySelf;
 import sourcecode.model.Customer;
 
 public class MyProductLayoutController implements Initializable {

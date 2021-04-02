@@ -23,7 +23,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import sourcecode.MainApp;
-import sourcecode.model.DAOCustomer;
+import sourcecode.model.CustomerMySelf;
 import sourcecode.model.Customer;
 
 public class RootLayoutController implements Initializable {

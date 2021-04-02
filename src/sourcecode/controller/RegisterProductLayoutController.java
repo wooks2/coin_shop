@@ -27,7 +27,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import sourcecode.util.SendEmail;
-import sourcecode.model.DAOCustomer;
+import sourcecode.model.CustomerMySelf;
 import sourcecode.model.Customer;
 
 public class RegisterProductLayoutController implements Initializable {
@@ -56,7 +56,7 @@ public class RegisterProductLayoutController implements Initializable {
     @FXML
     public void onBtnClickedRegisterProductSubmit(ActionEvent event) {
     	if(isValidInput()) {
-    		//submit data callableStatement with my info
+    		
     	}
     }
     

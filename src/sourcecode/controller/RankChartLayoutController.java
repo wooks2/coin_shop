@@ -14,7 +14,7 @@ import javafx.scene.chart.XYChart;
 
 
 import sourcecode.util.DateUtil;
-import sourcecode.model.DAOCustomer;
+import sourcecode.model.CustomerMySelf;
 import sourcecode.model.Customer;
 
 

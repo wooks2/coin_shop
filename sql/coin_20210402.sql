@@ -147,7 +147,6 @@ create table PRODUCT (
   information       varchar2(200 CHAR),
   price            number(9) NOT NULL,
   category_id      number(9) NOT NULL,
-  category_name    varchar2(50) NOT NULL, --
   product_status   VARCHAR2(10 CHAR) NOT NULL, --판매 상태 정보 추가 (READY,ORDER)
   shipment_id      number(9) NOT NULL
   )
@@ -169,9 +168,9 @@ partition by list(category_id)
 
 -- 샘플 데이터
 
-insert into PRODUCT values(1,1,'충전기 팔아요','충전기 저렴하게 판매합니다.',800,2,'READY',1);
-insert into PRODUCT values(2,2,'옷 팝니다','옷 팔아요.택만 제거하고 한번도 안입었어요',1000,1,'READY',2);
-insert into PRODUCT values(3,2,'두번째 옷 팔아연~!~!','두번 입음.',100,1,'READY',3);
+insert into PRODUCT values(1,1,'충전기','충전기 저렴하게 판매합니다.',800,2,'READY',1);
+insert into PRODUCT values(2,2,'옷','옷 팔아요.택만 제거하고 한번도 안입었어요',1000,1,'READY',2);
+insert into PRODUCT values(3,2,'옷','두번 입음.',100,1,'READY',3);
 
 commit;
 

@@ -1,5 +1,7 @@
 package sourcecode.model;
 
+
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -11,32 +13,29 @@ import javax.persistence.Query;
 import sourcecode.controller.DBConnection;
 import sourcecode.model.Customer;
 
-public class DAOCustomer {
+public class CustomerTheOther {
     
-    private static DAOCustomer instance;
+    private static CustomerTheOther instance;
     private Customer mine;
     
     private Connection conn = DBConnection.getConnection();   
     
-    public static DAOCustomer getInstance(){
+    public static CustomerTheOther getInstance(){
         if (instance == null){
-            instance = new DAOCustomer();
+            instance = new CustomerTheOther();
         }
         
         return instance;
     }
     
-    private DAOCustomer(){
+    private CustomerTheOther(){
     	mine = new Customer();
     }
 
     public Customer getCustomer() {
-    	if(mine != null)
-    		return this.mine;
-    	else {
+    	if(mine == null)
     		mine = new Customer();
-    		return this.mine;
-    	}
+    	return this.mine;
     }
     
     public void setCustomer(Customer customer) {

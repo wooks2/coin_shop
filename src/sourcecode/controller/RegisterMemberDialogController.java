@@ -53,7 +53,7 @@ public class RegisterMemberDialogController implements Initializable {
     private boolean okClicked = false;
     private String insertionType;
     
-    private DAOCustomer daoCustomer;
+    private CustomerMySelf customerMyself;
     
     //dialog init
     @Override
@@ -86,7 +86,7 @@ public class RegisterMemberDialogController implements Initializable {
     		
     	});
     	
-    	daoCustomer = DAOCustomer.getInstance();
+    	customerMyself = CustomerMySelf.getInstance();
     	System.out.println(pfPW.getText());
     }  
 
@@ -97,12 +97,12 @@ public class RegisterMemberDialogController implements Initializable {
     			&& tfPhoneNumber.getText() != null && tfZipCode.getText() != null
     			&& tfVolunteerTime.getText() != null && textPoint.getText() != null) {    		
     		if(bIsCheckedID && bIsCheckedPW && bIsCheckedPoint) {
-    			daoCustomer.getCustomer().setName(tfID.getText());
-    			daoCustomer.getCustomer().setPassword(pfPW.getText());
-    			daoCustomer.getCustomer().setPhone(tfPhoneNumber.getText());
-    			daoCustomer.getCustomer().setZipcode(tfZipCode.getText());
-    			daoCustomer.getCustomer().setVolunteer_time(Integer.parseInt(tfVolunteerTime.getText()));
-    			daoCustomer.getCustomer().setCoin(nPoint);
+    			customerMyself.getCustomer().setName(tfID.getText());
+    			customerMyself.getCustomer().setPassword(pfPW.getText());
+    			customerMyself.getCustomer().setPhone(tfPhoneNumber.getText());
+    			customerMyself.getCustomer().setZipcode(tfZipCode.getText());
+    			customerMyself.getCustomer().setVolunteer_time(Integer.parseInt(tfVolunteerTime.getText()));
+    			customerMyself.getCustomer().setCoin(nPoint);
     			return true;
     		} else {
     			
@@ -141,7 +141,7 @@ public class RegisterMemberDialogController implements Initializable {
     	if(isValidInput()) {
     		//register member data callableStatement
     
-    		procRegisterID(daoCustomer.getCustomer());
+    		procRegisterID(customerMyself.getCustomer());
     		currentStage.close();
     	}
     }
@@ -195,8 +195,8 @@ public class RegisterMemberDialogController implements Initializable {
     	//is ID exists? callableStatement
     	Alert alert = new Alert(AlertType.WARNING);
     	String message = "";
-    	daoCustomer.getCustomer().setName(tfID.getText());
-    	bIsCheckedID = procCheckID(daoCustomer.getCustomer());
+    	customerMyself.getCustomer().setName(tfID.getText());
+    	bIsCheckedID = procCheckID(customerMyself.getCustomer());
     	
     	if(bIsCheckedID == true) {
     		message = "사용가능한 ID입니다";
@@ -280,7 +280,7 @@ public class RegisterMemberDialogController implements Initializable {
     private void onBtnClickedCheckVolunteerTime(ActionEvent event) {
     	String volunteerTime = tfVolunteerTime.getText();
     	nPoint = Integer.parseInt(volunteerTime) * 10;
-    	daoCustomer.getCustomer().setCoin(nPoint);
+    	customerMyself.getCustomer().setCoin(nPoint);
     	textPoint.setText(Integer.toString(nPoint));
     	bIsCheckedPoint = true;
     	return;

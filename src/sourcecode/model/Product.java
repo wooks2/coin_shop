@@ -1,34 +1,35 @@
 package sourcecode.model;
 
 public class Product {
-	 private int intId;
-	 private int intCustomerId;
+	 private int intProductId;
+	 private int intSellerId;
+	 private int intPrice;
 	 private String strName;
 	 private String strInformation;
-	 private int intPrice;
-	 private int intCategoryId;
+	 private String strStatus; // READY, ORDER
 	 private String strCategoryName;
-	 private String strProductStatus; // READY, ORDER
-	 private int intShipmentId;
+	 private String strShipmentCompanyName;
+	 private String strImagePath; 
+
 	 
 	 public Product() {
 		 
 	 }
 	 
-	 public int getId() {
-	        return intId;
+	 public int getProductId() {
+	        return intProductId;
 	    } 
 
-	 public void setId(int id) {
-	        this.intId = id;
+	 public void setProductId(int id) {
+	        this.intProductId = id;
 	    }
 	 
-	 public int getCustomerId() {
-	        return intCustomerId;
+	 public int getSellerId() {
+	        return intSellerId;
 	    } 
 
-	 public void setCustomerId(int id) {
-	        this.intCustomerId = id;
+	 public void setSellerId(int id) {
+	        this.intSellerId = id;
 	    } 
 	 
 	 public int getPrice() {
@@ -55,11 +56,36 @@ public class Product {
 		 this.strInformation = information;
 	 }
 	 
-	 public String getName() {
-		 return strName;
+	 public String getStatus() {
+		 return strStatus;
 	 }
 	 
-	 public void setName(String name) {
-		 this.strName = name;
+	 public void setStatus(String status) {
+		 this.strStatus = status;
 	 }
+	 
+	 public String getCategoryName() {
+		 return strCategoryName;
+	 }
+	 
+	 public void setCategoryName(String category) {
+		 this.strCategoryName = category;
+	 }
+	 
+	 public String getShipmentCompanyName() {
+		 return strShipmentCompanyName;
+	 }
+	 
+	 public void setShipmentCompanyName(String shipment_company) {
+		 this.strShipmentCompanyName = shipment_company;
+	 }
+	 
+	 public String getImagePath() {
+		 return strImagePath;
+	 }
+	 
+	 public void setImagePath(String path) {
+		 this.strImagePath = path;
+	 }
+	 
 }

@@ -128,6 +128,20 @@ VAR R NUMBER;
 EXEC customer_login(3,'sadgs','cabw','asdfaseg','1231',1241,132,:R);
 PRINT R; -- 1이 로그인 성공!, 0은 로그인 실패
 
+------------------------------------------------------------------------
+-- customer 정보 받아오기
+
+CREATE OR REPLACE procedure sp_get_customer_info ( c_name IN customer.name%TYPE, record_list OUT SYS_REFCURSOR )
+AS
+BEGIN
+OPEN record_list FOR
+SELECT *
+FROM Customer
+WHERE name = c_name;
+END;
+/
+
+
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
 --                          메인 페이지                                     --

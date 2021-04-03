@@ -2,7 +2,7 @@ package sourcecode.model;
 
 public class Product {
 	 private int intProductId;
-	 private int intSellerId;
+	 private String strSellerId;
 	 private int intPrice;
 	 private String strName;
 	 private String strInformation;
@@ -12,7 +12,7 @@ public class Product {
 	 private String strImagePath; 
 
 	 
-	 public Product() {
+	 public Product() {  
 		 
 	 }
 	 
@@ -24,12 +24,12 @@ public class Product {
 	        this.intProductId = id;
 	    }
 	 
-	 public int getSellerId() {
-	        return intSellerId;
+	 public String getSellerId() {
+	        return strSellerId;
 	    } 
 
-	 public void setSellerId(int id) {
-	        this.intSellerId = id;
+	 public void setSellerId(String id) {
+	        this.strSellerId = id;
 	    } 
 	 
 	 public int getPrice() {

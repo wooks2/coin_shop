@@ -4,11 +4,6 @@ public class Company<K, V> {
 	private K key;
 	private V value;
 	
-	public Company(K k, V v) {
-		this.key = k;
-		this.value = v;
-	}
-	
 	public K getCompanyID() {
 		return key;
 	}

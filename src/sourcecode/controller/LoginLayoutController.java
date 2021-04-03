@@ -33,6 +33,10 @@ import sourcecode.MainApp;
 
 import sourcecode.controller.DBConnection;
 import sourcecode.model.CustomerMySelf;
+import sourcecode.model.DAOCategory;
+import sourcecode.model.DAOCompany;
+import sourcecode.model.Category;
+import sourcecode.model.Company;
 import sourcecode.model.Customer;
 
 public class LoginLayoutController implements Initializable {
@@ -48,7 +52,9 @@ public class LoginLayoutController implements Initializable {
 	private boolean bID;
 	private boolean bPW;
 	private boolean bLoginSuccess;
-	private CustomerMySelf daoCustomer;
+	private CustomerMySelf customerMyself;
+
+	
 	
 	@FXML
 	void onBtnClickedLogin(ActionEvent event) {
@@ -95,6 +101,8 @@ public class LoginLayoutController implements Initializable {
 					else {
 						System.out.println("로그인 성공");
 						procCallCustomerInfo(strID);
+						//procGetCategoryInfo();
+						//procGetCompanyInfo();
 						return true;
 					}
 				} catch (SQLException e) {
@@ -132,7 +140,7 @@ public class LoginLayoutController implements Initializable {
 	    			customerMyself.getCustomer().setZipcode(rs.getString("zipcode"));
 	    			customerMyself.getCustomer().setVolunteer_time(rs.getInt("volunteer_working_time"));
 	    			customerMyself.getCustomer().setCoin(rs.getInt("coin"));
-			        System.out.println(customerMyself.getCustomer().getName()+"로그인 정보 동기화");
+			        System.out.println(customerMyself.getCustomer().getName()+" 로그인 정보 동기화 완료");
 			   }
 		   } catch(Exception e) {
 			   e.printStackTrace();
@@ -142,6 +150,10 @@ public class LoginLayoutController implements Initializable {
 		   return true;
 			
 	   }
+	   
+	   
+	   
+
 	@FXML
 	void onBtnClickedRegisterMember(ActionEvent event) {
 		System.out.println("회원가입 버튼 클릭");
@@ -168,7 +180,6 @@ public class LoginLayoutController implements Initializable {
 		this.mainApp = mainApp;
 	}
 
-	
 	public boolean showRegisterMemberDialog(String title) {
 		thisScene = tfID.getScene();
 

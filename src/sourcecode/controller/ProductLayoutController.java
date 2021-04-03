@@ -66,8 +66,9 @@ public class ProductLayoutController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         categoryList = DAOCategory.getInstance();
-    	loadProduct(false);
         loadCombobox();
+    	loadProduct(false);
+        
 		/*
 		 * try{ productTable.getSelectionModel().selectedItemProperty().addListener(
 		 * (observable, oldValue, newValue) -> showNote(newValue));
@@ -96,7 +97,6 @@ public class ProductLayoutController implements Initializable {
                 String strCategoryName = cbCategoryList.getValue();
                 product = DAOProduct.getInstance().findByName(txtSearch.getText());
                
-
                 loadProduct(product);
             }
         }catch(NumberFormatException ime){
@@ -114,13 +114,29 @@ public class ProductLayoutController implements Initializable {
     
     @FXML
     void actionCombobox(ActionEvent event) {
-        if (cbCategoryList.getValue().equals("All")){
-            loadProduct(true);
+    	try{
+            if (cbCategoryList.getValue().equals("All")){
+            	loadProduct(true);
+            }else{
+                
+                List<Product> product = new ArrayList();
+                String strCategoryName = cbCategoryList.getValue();
+                product = DAOProduct.getInstance().findByName(txtSearch.getText());
+               
+                loadProduct(product);
+            }
+        }catch(NumberFormatException ime){
+            lblError.setText("Enter the valid value type");
+        }catch(NullPointerException npe){
+            lblError.setText("Enter some value");
         }
     }
     
     
-    
+    public void refresh() {
+    	loadCombobox();
+     	loadProduct(false);
+    }
     @FXML
     private void onClickedTable(MouseEvent event) {
     	//productTable.getSelectionModel().getSelectedItem().getXX();
@@ -202,11 +218,11 @@ public class ProductLayoutController implements Initializable {
         
 		/*
 		 * ArrayList<String> values = new ArrayList<String>(); for (int i = 0; i <
-		 * listCustomer.size(); i++){ values.add(listCustomer.get(i).getName());
-		 * values.add(listCustomer.get(i).getAddress());
-		 * values.add(listCustomer.get(i).getEmail());
-		 * values.add(listCustomer.get(i).getBirthday());
-		 * values.add(listCustomer.get(i).getNumber()); }
+		 * productList.size(); i++){ values.add(productList.get(i).getName());
+		 * values.add(productList.get(i).getAddress());
+		 * values.add(productList.get(i).getEmail());
+		 * values.add(productList.get(i).getBirthday());
+		 * values.add(productList.get(i).getNumber()); }
 		 */
         
         

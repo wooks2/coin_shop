@@ -328,7 +328,7 @@ BEGIN
 	-- product customer id 판매자
 	
 	
-	insert into shipment(id,shipment_company_id,product_id, PRODUCT_CUSTOMER_ID)
+	insert into shipment(id, shipment_company_id, product_id, PRODUCT_CUSTOMER_ID)
 	values(ship_id, shipcom_id, product_id, customer_id);
 	
 	commit;
@@ -336,10 +336,10 @@ BEGIN
 END; 
 /
 
-exec product_insert(1,'충전기 또 팔아연', '좋아요 이거', 1000, 'clothing','hangin');
+exec product_insert(1,'충전기 또 팔아연', '좋아요 이거', 1000, '디지털', 'hanjin');
 
 
-
+exec product_insert(1,'키보드', '기계식 키보드 팜', 2000, '디지털', '롯데');
 
 -----------------------------------------------------------------------------
 -- 수령 확인 버튼(미완성)
@@ -350,8 +350,7 @@ exec product_insert(1,'충전기 또 팔아연', '좋아요 이거', 1000, 'clot
 
 CREATE OR REPLACE PROCEDURE product_accept
 (
-    p_id IN product.id%TYPE,
-	
+    p_id IN product.id%TYPE;
 )	
 IS
 BEGIN  

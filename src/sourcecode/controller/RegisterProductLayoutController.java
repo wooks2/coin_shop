@@ -90,15 +90,14 @@ public class RegisterProductLayoutController implements Initializable {
           } catch(NullPointerException e) {
              
           } finally {
-             
              if(productPrice.length() == 0)
                 return;
               tfProductPrice.setText(productPrice);
           }
           
        });
-    }    
-    
+    }
+
     @FXML
     public void onBtnClickedRegisterProductSubmit(ActionEvent event) {
        if(isValidInput()) {
@@ -171,7 +170,6 @@ public class RegisterProductLayoutController implements Initializable {
             }
     }
     
-   
     
     public boolean isValidInput(){
         
@@ -204,8 +202,6 @@ public class RegisterProductLayoutController implements Initializable {
         if (cbShipmentCompany.getValue() == null){
             errorMessage += "배송 업체를 선택해주세요!\n";
         }
-       
-        
         
         if (errorMessage.length() == 0){
             return true;
@@ -242,22 +238,23 @@ public class RegisterProductLayoutController implements Initializable {
     }
     
     public void loadComboboxCategory(){
-       categorys = DAOCategory.getInstance();
-       if(categorys.getCategorySize() == 0) {
-          return;
-       }
-       
-       int categorySize = categorys.getCategorySize();
+    	categorys = DAOCategory.getInstance();
+    	if(categorys.getCategorySize() == 0) {
+    		return;
+    	}
+    	
+    	int categorySize = categorys.getCategorySize();
         List<String> values = new ArrayList<String>();
         values.add("All");
         for(int idx=0; idx<categorySize; idx++) {
-           values.add(categorys.getCategory(idx).getCategoryName());
+        	values.add(categorys.getCategory(idx).getCategoryName());
         }
         
         
         ObservableList<String> obsValues = FXCollections.observableArrayList(values);
         cbCategory.setItems(obsValues);
     }
+    
     public void setDialogStage(Stage dialogStage) {
         this.currentStage = dialogStage;
     }

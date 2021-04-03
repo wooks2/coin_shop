@@ -33,6 +33,10 @@ import sourcecode.MainApp;
 
 import sourcecode.controller.DBConnection;
 import sourcecode.model.CustomerMySelf;
+import sourcecode.model.DAOCategory;
+import sourcecode.model.DAOCompany;
+import sourcecode.model.Category;
+import sourcecode.model.Company;
 import sourcecode.model.Customer;
 
 public class LoginLayoutController implements Initializable {
@@ -48,7 +52,10 @@ public class LoginLayoutController implements Initializable {
 	private boolean bID;
 	private boolean bPW;
 	private boolean bLoginSuccess;
-	private CustomerMySelf daoCustomer;
+	private CustomerMySelf customerMyself;
+	private DAOCategory daoCategory;
+	private DAOCompany daoCompany;
+	
 	
 	@FXML
 	void onBtnClickedLogin(ActionEvent event) {
@@ -95,6 +102,8 @@ public class LoginLayoutController implements Initializable {
 					else {
 						System.out.println("로그인 성공");
 						procCallCustomerInfo(strID);
+						procGetCategoryInfo();
+						procGetCompanyInfo();
 						return true;
 					}
 				} catch (SQLException e) {
@@ -132,7 +141,7 @@ public class LoginLayoutController implements Initializable {
 	    			customerMyself.getCustomer().setZipcode(rs.getString("zipcode"));
 	    			customerMyself.getCustomer().setVolunteer_time(rs.getInt("volunteer_working_time"));
 	    			customerMyself.getCustomer().setCoin(rs.getInt("coin"));
-			        System.out.println(customerMyself.getCustomer().getName()+"로그인 정보 동기화");
+			        System.out.println(customerMyself.getCustomer().getName()+" 로그인 정보 동기화 완료");
 			   }
 		   } catch(Exception e) {
 			   e.printStackTrace();
@@ -142,6 +151,64 @@ public class LoginLayoutController implements Initializable {
 		   return true;
 			
 	   }
+	   
+	   private boolean procGetCategoryInfo() {
+		   OracleCallableStatement ocstmt = null;
+		   Category<Integer, String> categorys = new Category<>();
+		   daoCategory = DAOCategory.getInstance();
+		   String runP = "{ call get_category_info(?)}";
+		   
+		   try {
+			   Connection conn = DBConnection.getConnection();
+			   Statement stmt = conn.createStatement();
+			   CallableStatement callableStatement = conn.prepareCall(runP.toString());
+			   callableStatement.registerOutParameter(1, OracleTypes.CURSOR);
+			   callableStatement.executeUpdate();	
+			   ocstmt = (OracleCallableStatement)callableStatement;
+
+			   ResultSet rs =  ocstmt.getCursor(1);
+			   while (rs.next()) {
+				   categorys.setCategory(rs.getInt("id"), rs.getString("name"));
+				   System.out.println(categorys.getCategoryID()+" "+categorys.getCategoryName());
+				   daoCategory.addCategory(categorys);
+			   }
+			   
+		   } catch(Exception e) {
+			   e.printStackTrace();
+			   return false;
+		   }
+		   return true;
+	   }
+	   
+	   private boolean procGetCompanyInfo() {
+		   OracleCallableStatement ocstmt = null;
+		   Company<Integer, String> companys = new Company<>();
+		   daoCompany = DAOCompany.getInstance();
+		   String runP = "{ call get_company_info(?)}";
+		   
+		   try {
+			   Connection conn = DBConnection.getConnection();
+			   Statement stmt = conn.createStatement();
+			   CallableStatement callableStatement = conn.prepareCall(runP.toString());
+			   callableStatement.registerOutParameter(1, OracleTypes.CURSOR);
+			   callableStatement.executeUpdate();	
+			   ocstmt = (OracleCallableStatement)callableStatement;
+
+			   ResultSet rs =  ocstmt.getCursor(1);
+			   while (rs.next()) {
+				   companys.setCompany(rs.getInt("id"), rs.getString("name"));
+				   System.out.println(companys.getCompanyID()+" "+companys.getCompanyName());
+				   daoCompany.addCompany(companys);
+			   }
+			   
+		   } catch(Exception e) {
+			   e.printStackTrace();
+			   return false;
+		   }
+		   return true;
+	   }
+	   
+
 	@FXML
 	void onBtnClickedRegisterMember(ActionEvent event) {
 		System.out.println("회원가입 버튼 클릭");

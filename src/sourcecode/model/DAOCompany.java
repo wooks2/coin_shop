@@ -11,6 +11,7 @@ public class DAOCompany {
 	private Connection conn = DBConnection.getConnection(); 
 	
 	private DAOCompany() {
+		companys = new ArrayList<Company<Integer, String>>();
 	}
 	
 	public static DAOCompany getInstance() {
@@ -21,8 +22,13 @@ public class DAOCompany {
 		else return instance;
 	}
 	
+	
 	public void addCompany(Company<Integer, String> company) {
 		companys.add(company);
+	}
+	
+	public int getCompanySize() {
+	      return companys.size();
 	}
 	
 	public Company<Integer, String> getCompany(int i) {

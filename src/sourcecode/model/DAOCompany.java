@@ -32,4 +32,8 @@ public class DAOCompany {
 		else
 			return companys.get(i);
 	}
+	
+	public int getCompanySize() {
+		return companys.size();
+	}
 }

@@ -162,11 +162,9 @@ public class MainApp extends Application {
 
 			RegisterProductLayoutController controller = loader.getController();
 			controller.setDialogStage(stageRegProduct);
-			//controller.setPerson(person);
 
 			stageRegProduct.showAndWait();
 			return true;
-			//return controller.isOkClicked();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;

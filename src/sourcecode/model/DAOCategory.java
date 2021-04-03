@@ -8,13 +8,12 @@ import sourcecode.controller.DBConnection;
 public class DAOCategory {
 	static DAOCategory instance;
 	private ArrayList<Category<Integer, String>> categorys;
-	
 	private Connection conn = DBConnection.getConnection(); 
 	
 	private DAOCategory() {
 	}
 	
-	public DAOCategory getInstance() {
+	public static DAOCategory getInstance() {
 		if(instance != null)
 			return instance;
 		else {
@@ -33,6 +32,10 @@ public class DAOCategory {
 			return null;
 		else
 			return categorys.get(i);
+	}
+	
+	public int getCategorySize() {
+		return categorys.size();
 	}
 	
 }

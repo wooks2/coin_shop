@@ -28,6 +28,8 @@ import javafx.stage.Stage;
 
 import sourcecode.util.SendEmail;
 import sourcecode.model.CustomerMySelf;
+import sourcecode.model.DAOCategory;
+import sourcecode.model.DAOCompany;
 import sourcecode.model.Customer;
 
 public class RegisterProductLayoutController implements Initializable {
@@ -48,6 +50,8 @@ public class RegisterProductLayoutController implements Initializable {
     private String strProductImagePath;
     private int nProductPrice;
     
+    private DAOCategory categorys;
+    private DAOCompany company;
    
    
     private List<String> emails;
@@ -163,7 +167,8 @@ public class RegisterProductLayoutController implements Initializable {
         strProductImagePath = tfProductImagePath.getText();
         
         
-        
+        //제품등록 callablestatement
+
         
         if (errorMessage.length() == 0){
             return true;
@@ -198,6 +203,7 @@ public class RegisterProductLayoutController implements Initializable {
     }
     
     public void loadComboboxCategory(){
+    	
         List<String> values = new ArrayList();
         //load from db
         //values.add("CJ");

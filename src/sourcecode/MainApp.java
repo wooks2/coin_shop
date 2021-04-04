@@ -19,6 +19,7 @@ import sourcecode.controller.LoginLayoutController;
 import sourcecode.controller.RegisterMemberDialogController;
 import sourcecode.controller.RegisterProductLayoutController;
 import sourcecode.model.CustomerMySelf;
+import sourcecode.model.Product;
 import sourcecode.model.Customer;
 
 
@@ -120,7 +121,7 @@ public class MainApp extends Application {
 		return true;
 	}
 
-	public boolean showBuyProductDialog() {
+	public boolean showBuyProductDialog(Product selectedProduct) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 	
@@ -136,7 +137,7 @@ public class MainApp extends Application {
 
 			BuyProductLayoutController controller = loader.getController();
 			controller.setDialogStage(stageBuyProduct);
-			//controller.setPerson(person);
+			controller.setData(selectedProduct);
 
 			stageBuyProduct.showAndWait();
 			return true;

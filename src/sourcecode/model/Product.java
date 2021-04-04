@@ -3,6 +3,7 @@ package sourcecode.model;
 public class Product {
 	 private int intProductId;
 	 private String strSellerId;
+	 private String strBuyerId;
 	 private int intPrice;
 	 private String strName;
 	 private String strInformation;
@@ -13,9 +14,15 @@ public class Product {
 
 	 
 	 public Product() {  
-		 
+		 this.strImagePath = "C:/";
+		 this.strInformation = "¡íoC¡Æ A¢´¨¬¢¬";
 	 }
-	 
+	 public String getBuyerId() {
+		 return strBuyerId;
+	 }
+	 public void setBuyerId(String id) {
+		 this.strBuyerId = id;
+	 }
 	 public int getProductId() {
 	        return intProductId;
 	    } 
